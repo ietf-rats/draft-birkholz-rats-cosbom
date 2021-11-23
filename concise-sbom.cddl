@@ -1,0 +1,342 @@
+document = {
+  element,
+  namespace => ~uri,
+  elements => [ + $element ]
+  ? root-elements => [ + element-id ],
+  ? external-maps => [ + external-map ],
+}
+
+$element /= document
+$element /= annotation
+$element /= relationship
+$element /= contextual-collection
+$element /= snippet
+$element /= file
+$element /= package
+$element /= tool
+$element /= organization
+$element /= person
+$element /= contextual-collection
+
+element = (
+  id => element-id,
+  ? name => text,
+  ? summary => text,
+  ? description => text,
+  ? comment => text,
+  spec-version => semver,
+  created => ~time,
+  profile => $profile-identifier,
+  data-license => $license-identifier,
+  ? annotations => [ + element-id ],
+  ? verified-using => $integrity-method,
+)
+
+$integrity-method /= public-key
+$integrity-method /= hash
+
+public-key = ~b64url
+
+hash = {
+  hash-algorithm => $algorithm,
+  hash-value => ~b64url,
+}
+
+$algorithm /= SHA1
+$algorithm /= SHA224
+$algorithm /= SHA256
+$algorithm /= SHA384
+$algorithm /= SHA512
+$algorithm /= SHA3-224
+$algorithm /= SHA3-256
+$algorithm /= SHA3-384
+$algorithm /= SHA3-512
+$algorithm /= MD2
+$algorithm /= MD4
+$algorithm /= MD5
+$algorithm /= MD6
+$algorithm /= SPDX-PVC
+$algorithm /= BLAKE2b-256
+$algorithm /= BLAKE2b-384
+$algorithm /= BLAKE2b-512
+$algorithm /= BLAKE3
+
+element-id = text
+semver = text
+
+$profile-identifier /= mySBOMtype
+$license-identifier /= CC0
+
+relationship = {
+  element,
+  relationship-type => $relationship-type,
+  relationship-completeness => $completeness-type,
+  from => element-id,
+  to => [ + element-id ], 
+}
+
+$relationship-type /= DESCRIBES
+$relationship-type /= DESCRIBED_BY
+$relationship-type /= CONTAINS
+$relationship-type /= CONTAINED_BY
+$relationship-type /= DEPENDS_ON
+$relationship-type /= DEPENDENCY_OF
+$relationship-type /= DEPENDENCY_MANIFEST_OF
+$relationship-type /= BUILD_DEPENDENCY_OF
+$relationship-type /= DEV_DEPENDENCY_OF
+$relationship-type /= OPTIONAL_DEPENDENCY_OF
+$relationship-type /= PROVIDED_DEPENDENCY_OF
+$relationship-type /= TEST_DEPENDENCY_OF
+$relationship-type /= RUNTIME_DEPENDENCY_OF
+$relationship-type /= EXAMPLE_OF
+$relationship-type /= GENERATES
+$relationship-type /= GENERATED_FROM
+$relationship-type /= ANCESTOR_OF
+$relationship-type /= DESCENDANT_OF
+$relationship-type /= VARIANT_OF
+$relationship-type /= DISTRIBUTION_ARTIFACT
+$relationship-type /= PATCH_FOR
+$relationship-type /= PATCH_APPLIED
+$relationship-type /= COPY_OF
+$relationship-type /= FILE_ADDED
+$relationship-type /= FILE_DELETED
+$relationship-type /= FILE_MODIFIED
+$relationship-type /= EXPANDED_FROM_ARCHIVE
+$relationship-type /= DYNAMIC_LINK
+$relationship-type /= STATIC_LINK
+$relationship-type /= DATA_FILE_OF
+$relationship-type /= TEST_CASE_OF
+$relationship-type /= BUILD_TOOL_OF
+$relationship-type /= DEV_TOOL_OF
+$relationship-type /= TEST_OF
+$relationship-type /= TEST_TOOL_OF
+$relationship-type /= DOCUMENTATION_OF
+$relationship-type /= OPTIONAL_COMPONENT_OF
+$relationship-type /= METAFILE_OF
+$relationship-type /= PACKAGE_OF
+$relationship-type /= AMENDS
+$relationship-type /= PREREQUISITE_FOR
+$relationship-type /= HAS_PREREQUISITE
+$relationship-type /= OTHER-RELATIONSHIP
+
+$completeness-type /= KNOWN
+$completeness-type /= INCOMPLETE
+$completeness-type /= UNKNOWN
+
+annotation = {
+  element,
+  annotation-type => $annotation-type,
+  ? statement => text,
+}
+
+$annotation-type /= REVIEW
+$annotation-type /= OTHER-ANNOTATION
+
+
+artifact = (
+  element,
+  ? artifact-url => ~uri
+  ? originator => [ + identities ]
+)
+
+identities = tool / organization / person
+
+identity = (
+  element,
+  ? email => text,
+)
+
+tool = {
+  identity,
+  user-agent => text,
+}
+
+organization = {
+  identity,
+  organization-identifier => text,
+}
+
+person = {
+  identity,
+  person-name => text,
+}
+
+file = {
+  artifact,
+  ? file-type => $file-type-identifier,
+  ? content-type => media-type,
+}
+
+media-type = text
+$file-type-identifier /= SOURCE-FILE
+$file-type-identifier /= ARCHIVE-FILE
+$file-type-identifier /= APPLICATION-FILE
+$file-type-identifier /= DOCUMENTATION
+$file-type-identifier /= BOM
+$file-type-identifier /= OTHER-FILE
+
+snippet = {
+  artifact,
+  snippet-location => text,
+}
+
+package = {
+  ~contextual-collection,
+  software-package-type => $software-package-type,
+}
+
+$software-package-type /= APPLICATION-PACKAGE
+$software-package-type /= FRAMEWORK
+$software-package-type /= LIBRARY
+$software-package-type /= CONTAINER
+$software-package-type /= OPERATING-SYSTEM
+$software-package-type /= DEVICE
+$software-package-type /= FIRMWARE
+$software-package-type /= SOURCE-PACKAGE
+$software-package-type /= ARCHIVE-PACKAGE
+$software-package-type /= OTHER-PACKAGE
+
+;sbom = bom
+;bom = contextual-collection
+
+contextual-collection = {
+  artifact,
+  root-elements => [ + element-id ],
+  elements => [ + element ],
+}
+
+external-map = {
+  external-id => text,
+  element-url => ~uri,
+  ? defining-document => element-id,
+  created-by => [ + identities ],
+}
+
+id = 0
+name = 1
+summary = 2
+description = 3
+comment = 4
+spec-version = 5
+created = 6
+profile = 7
+data-license = 8
+annotations = 9
+verified-using = 10
+namespace = 11
+elements = 12
+root-elements = 13
+hash-algorithm = 14
+hash-value = 15
+relationship-type = 16
+relationship-completeness = 17
+from = 18
+to = 19
+artifact-url = 20
+originator = 21
+person-name = 22
+organization-identifier = 23
+email = 24
+user-agent = 25
+file-type = 26
+content-type = 27
+annotation-type = 28
+statement = 29
+snippet-location = 30
+software-package-type = 31
+external-id = 32
+element-url = 33
+defining-document = 34
+created-by = 35
+external-maps = 36
+
+SHA1 = 0
+SHA224 = 1
+SHA256 = 2
+SHA384 = 3
+SHA512 = 4
+SHA3-224 = 5
+SHA3-256 = 6
+SHA3-384 = 7
+SHA3-512 = 8
+MD2 = 9
+MD4 = 10
+MD5 = 11
+MD6 = 12
+SPDX-PVC = 13
+BLAKE2b-256 = 14
+BLAKE2b-384 = 15
+BLAKE2b-512 = 16
+BLAKE3 = 17
+
+mySBOMtype = 0
+CC0 = 0
+
+OTHER-RELATIONSHIP = 0
+DESCRIBES = 1
+DESCRIBED_BY = 2
+CONTAINS = 3
+CONTAINED_BY = 4
+DEPENDS_ON = 5
+DEPENDENCY_OF = 6
+DEPENDENCY_MANIFEST_OF = 7
+BUILD_DEPENDENCY_OF = 8
+DEV_DEPENDENCY_OF = 9
+OPTIONAL_DEPENDENCY_OF = 10
+PROVIDED_DEPENDENCY_OF = 11
+TEST_DEPENDENCY_OF = 12
+RUNTIME_DEPENDENCY_OF = 13
+EXAMPLE_OF = 14
+GENERATES = 15
+GENERATED_FROM = 16
+ANCESTOR_OF = 17
+DESCENDANT_OF = 18
+VARIANT_OF = 19
+DISTRIBUTION_ARTIFACT = 20
+PATCH_FOR = 21
+PATCH_APPLIED = 22
+COPY_OF = 23
+FILE_ADDED = 24
+FILE_DELETED = 25
+FILE_MODIFIED = 26
+EXPANDED_FROM_ARCHIVE = 27
+DYNAMIC_LINK = 28
+STATIC_LINK = 29
+DATA_FILE_OF = 30
+TEST_CASE_OF = 31
+BUILD_TOOL_OF = 32
+DEV_TOOL_OF = 33
+TEST_OF = 34
+TEST_TOOL_OF = 35
+DOCUMENTATION_OF = 36
+OPTIONAL_COMPONENT_OF = 37
+METAFILE_OF = 38
+PACKAGE_OF = 39
+AMENDS = 40
+PREREQUISITE_FOR = 41
+HAS_PREREQUISITE = 42
+
+KNOWN = 0
+INCOMPLETE = 1
+UNKNOWN = 2
+
+OTHER-ANNOTATION = 0
+REVIEW = 1
+
+OTHER-FILE = 0
+SOURCE-FILE = 1
+ARCHIVE-FILE = 2
+APPLICATION-FILE = 3
+DOCUMENTATION = 4
+BOM = 5
+
+OTHER-PACKAGE = 0
+APPLICATION-PACKAGE = 1
+FRAMEWORK = 2
+LIBRARY = 3
+CONTAINER = 4
+OPERATING-SYSTEM = 5
+DEVICE = 6
+FIRMWARE = 7
+SOURCE-PACKAGE = 8
+ARCHIVE-PACKAGE = 9
