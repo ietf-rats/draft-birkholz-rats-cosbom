@@ -181,21 +181,33 @@ snippet = {
 }
 
 package = {
-  ~contextual-collection,
-  software-package-type => $software-package-type,
+;  ~contextual-collection,
+  artifact,
+;  software-package-type => $software-package-type,
+  package-purpose => $software-purpose,
 }
 
-$software-package-type /= APPLICATION-PACKAGE
-$software-package-type /= FRAMEWORK
-$software-package-type /= LIBRARY
-$software-package-type /= CONTAINER
-$software-package-type /= OPERATING-SYSTEM
-$software-package-type /= DEVICE
-$software-package-type /= FIRMWARE
-$software-package-type /= SOURCE-PACKAGE
+;$software-package-type /= APPLICATION-PACKAGE
+;$software-package-type /= FRAMEWORK
+;$software-package-type /= LIBRARY
+;$software-package-type /= CONTAINER
+;$software-package-type /= OPERATING-SYSTEM
+;$software-package-type /= DEVICE
+;$software-package-type /= FIRMWARE
+;$software-package-type /= SOURCE-PACKAGE
+;$software-package-type /= ARCHIVE-PACKAGE
+;$software-package-type /= OTHER-PACKAGE
+
+$software-purpose /= APPLICATION-PACKAGE
+$software-purpose /= FRAMEWORK
+$software-purpose /= LIBRARY
+$software-purpose /= CONTAINER
+$software-purpose /= OPERATING-SYSTEM
+$software-purpose /= DEVICE
+$software-purpose /= FIRMWARE
+$software-purpose /= SOURCE-PACKAGE
 $software-package-type /= ARCHIVE-PACKAGE
 $software-package-type /= OTHER-PACKAGE
-
 ;sbom = bom
 ;bom = contextual-collection
 
@@ -243,7 +255,8 @@ content-type = 27
 annotation-type = 28
 statement = 29
 snippet-location = 30
-software-package-type = 31
+;software-package-type = 31
+package-purpose = 31
 external-id = 32
 element-url = 33
 defining-document = 34
